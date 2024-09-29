@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DC COMICS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif; /* Standard font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: transparent; /* Fully transparent background */
+            color: black; /* Standard text color */
+            text-align: center;
+        }
+
+        #quiz-container {
+            background-color: transparent; /* Fully transparent container */
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        #logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .answer {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: white; /* Change the answer color to white */
+        }
+
+        #next-button {
+            background-color: white; /* Change background color to white */
+            color: black; /* Change text color to black for visibility */
+            border: 2px solid #ff9900; /* Optional: Add a border for better visibility */
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #next-button:hover {
+            background-color: #ffcc00; /* Change hover color for better effect */
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fadeOut {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.5s forwards;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <img id="logo" src="https://i.imgur.com/cyZ0Z21.png" alt="DC Comics Logo">
+    <h1>DC COMICS</h1>
+    <div id="question-container">
+        <div class="question" id="question">Loading question...</div>
+        <div class="answer" id="answer">Loading answer...</div>
+        <button id="next-button" onclick="nextQuestion()">Next Question</button>
+    </div>
+</div>
+
+<script>
+    // Question and answers data
+    const quizData = [
+        { question: "What is Superman's birth name?", answer: "Kal-El" },
+        { question: "Who is the billionaire alter ego of Batman?", answer: "Bruce Wayne" },
+        { question: "What is the name of Wonder Woman’s homeland?", answer: "Themyscira" },
+        { question: "Who is Batman's most famous sidekick?", answer: "Robin" },
+        { question: "What is the name of Superman’s adoptive mother?", answer: "Martha Kent" },
+        { question: "What is the name of the alien planet Superman comes from?", answer: "Krypton" },
+        { question: "Which villain is known as the 'Clown Prince of Crime'?", answer: "The Joker" },
+        { question: "Who is the Green Lantern of Sector 2814?", answer: "Hal Jordan" },
+        { question: "What is Wonder Woman's real name?", answer: "Diana Prince" },
+        { question: "Which superhero team includes Batman, Superman, and Wonder Woman?", answer: "Justice League" },
+        { question: "Who is the fastest man alive?", answer: "The Flash" },
+        { question: "What is Aquaman's real name?", answer: "Arthur Curry" },
+        { question: "Who created Batman?", answer: "Bob Kane and Bill Finger" },
+        { question: "What is the source of Green Lantern’s power?", answer: "His power ring" },
+        { question: "Which villain broke Batman’s back in the comics?", answer: "Bane" },
+        { question: "What is the name of Batman’s butler?", answer: "Alfred Pennyworth" },
+        { question: "Who killed Superman in the Death of Superman comic arc?", answer: "Doomsday" },
+        { question: "What is the Joker's real name in most continuities?", answer: "Unrevealed/Unknown" },
+        { question: "Which superhero is vulnerable to the color yellow in early comics?", answer: "Green Lantern (Hal Jordan)" },
+        { question: "Who is the archenemy of Wonder Woman?", answer: "Ares" },
+        { question: "What is the name of Batman’s city?", answer: "Gotham City" },
+        { question: "Who is the first Robin?", answer: "Dick Grayson" },
+        { question: "What is the Flash’s real name?", answer: "Barry Allen" },
+        { question: "Which DC villain is known as the 'Master of Fear'?", answer: "Scarecrow" },
+        { question: "Who is the current king of Atlantis in DC Comics?", answer: "Aquaman (Arthur Curry)" },
+        { question: "Which DC superhero has the ability to create hard-light constructs?", answer: "Green Lantern" },
+        { question: "What is the name of Superman's dog?", answer: "Krypto" },
+        { question: "Who is known as the Amazonian Princess?", answer: "Wonder Woman" },
+        { question: "Which member of the Bat-Family was killed by the Joker in A Death in the Family?", answer: "Jason Todd (Robin)" },
+        { question: "What is the name of the newspaper where Clark Kent works?", answer: "The Daily Planet" },
+        { question: "Who is Lex Luthor’s half-sister?", answer: "Lena Luthor" },
+        { question: "What is the name of Batman’s car?", answer: "The Batmobile" },
+        { question: "Who is the leader of the Suicide Squad in the comics?", answer: "Amanda Waller" },
+        { question: "What is the real name of the supervillain Black Adam?", answer: "Teth-Adam" },
+        { question: "Which DC superhero uses a lasso of truth?", answer: "Wonder Woman" },
+        { question: "Who is the archenemy of Aquaman?", answer: "Black Manta" },
+        { question: "What is the name of the villain group that often battles the Justice League?", answer: "The Legion of Doom" },
+        { question: "What is Harley Quinn’s real name?", answer: "Dr. Harleen Quinzel" },
+        { question: "Which superhero is known for saying 'Shazam' to transform?", answer: "Shazam (formerly Captain Marvel)" },
+        { question: "Who is the daughter of Batman and Talia al Ghul?", answer: "Damian Wayne" },
+        { question: "Which DC superhero can communicate with fish?", answer: "Aquaman" },
+        { question: "What is the name of Batman's computer?", answer: "The Batcomputer" },
+        { question: "Who is known as the 'Man of Steel'?", answer: "Superman" },
+        { question: "What is the name of Batman's flying vehicle?", answer: "The Batplane or Batwing" },
+        { question: "What is the name of the speedster villain who constantly battles The Flash?", answer: "Reverse-Flash (Eobard Thawne)" },
+        { question: "Who is the ruler of Apokolips?", answer: "Darkseid" },
+        { question: "What is Wonder Woman’s weapon of choice?", answer: "The Lasso of Truth" },
+        { question: "Which DC villain is known for using riddles to taunt his enemies?", answer: "The Riddler" },
+        { question: "What is the name of Green Arrow’s alter ego?", answer: "Oliver Queen" },
+        { question: "Which DC superhero has a weakness to lead?", answer: "Superman (as he cannot see through lead)" },
+        { question: "Who is the founder of the League of Assassins?", answer: "Ra's al Ghul" },
+        { question: "What is the name of The Flash's wife?", answer: "Iris West" },
+        { question: "Which villain does John Constantine often face?", answer: "The First of the Fallen" },
+        { question: "Which Green Lantern becomes a villain known as Parallax?", answer: "Hal Jordan" },
+        { question: "What is the real name of the Atom?", answer: "Ray Palmer" },
+        { question: "Which DC superhero is known for his ability to shrink in size?", answer: "The Atom" },
+        { question: "Who is the second Robin?", answer: "Jason Todd" },
+        { question: "Which hero has the catchphrase 'Great Hera!'", answer: "Wonder Woman" },
+        { question: "What is the name of the sentient computer that helps Superman?", answer: "The Fortress of Solitude Computer" },
+        { question: "Who is Batman’s main love interest in the comics?", answer: "Catwoman (Selina Kyle)" },
+        { question: "Which member of the Justice League is an Amazonian warrior?", answer: "Wonder Woman" },
+        { question: "Which villain is known for freezing Gotham with his ice gun?", answer: "Mr. Freeze (Victor Fries)" },
+        { question: "What is the real name of the Flash villain Captain Cold?", answer: "Leonard Snart" },
+        { question: "Which DC superhero has a magic word that grants him his powers?", answer: "Shazam" },
+        { question: "Which villain is the daughter of Ra’s al Ghul and a love interest of Batman?", answer: "Talia al Ghul" },
+        { question: "Which DC character is the King of the Seven Seas?", answer: "Aquaman" },
+        { question: "What is the name of Batman's secret headquarters?", answer: "The Batcave" },
+        { question: "Which villain does Superman face who is made entirely of technology?", answer: "Brainiac" },
+        { question: "Who was the first live-action Superman?", answer: "George Reeves" },
+        { question: "Which Green Lantern is a member of the Justice League?", answer: "Hal Jordan" },
+        { question: "Which character said, 'You either die a hero, or live long enough to see yourself become the villain'?", answer: "Harvey Dent (Two-Face)" },
+        { question: "What is Cyborg's real name?", answer: "Victor Stone" },
+        { question: "Which villain does Batman face in The Dark Knight Rises?", answer: "Bane" },
+        { question: "Who is the most powerful magic user in the DC Universe?", answer: "Zatanna" },
+        { question: "Which superhero says, 'In brightest day, in blackest night'?", answer: "Green Lantern" },
+        { question: "Who is Batman's son who becomes Robin?", answer: "Damian Wayne" },
+        { question: "Which DC villain refers to himself as 'The Main Man'?", answer: "Lobo" },
+        { question: "Which Green Lantern is from the planet Korugar and becomes a villain?", answer: "Sinestro" },
+        { question: "Who is the super-intelligent gorilla villain of the Flash?", answer: "Gorilla Grodd" },
+        { question: "What is the name of the Justice League's satellite headquarters?", answer: "The Watchtower" },
+        { question: "Which superhero can manipulate electricity and is known for his alter ego, Jefferson Pierce?", answer: "Black Lightning" },
+        { question: "Which DC hero was originally a psychiatrist?", answer: "Harley Quinn" },
+        { question: "Who is the powerful cosmic being that devours worlds in the DC Universe?", answer: "Anti-Monitor" }
+    ];
+
+    let currentQuestionIndex = 0;
+
+    // Shuffle the quiz data
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Start the quiz
+    shuffle(quizData);
+    showQuestion();
+
+    function showQuestion() {
+        const questionContainer = document.getElementById("question");
+        const answerContainer = document.getElementById("answer");
+
+        questionContainer.innerText = quizData[currentQuestionIndex].question;
+        answerContainer.innerText = "Loading answer...";
+
+        // Fade in effect
+        answerContainer.classList.remove("fadeIn");
+        answerContainer.classList.add("fadeOut");
+
+        setTimeout(() => {
+            answerContainer.innerText = quizData[currentQuestionIndex].answer;
+            answerContainer.classList.remove("fadeOut");
+            answerContainer.classList.add("fadeIn");
+        }, 500);
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            showQuestion();
+        } else {
+            const questionContainer = document.getElementById("question");
+            const answerContainer = document.getElementById("answer");
+            questionContainer.innerText = "Thank you for playing!";
+            answerContainer.innerText = "";
+            document.getElementById("next-button").style.display = "none"; // Hide the next button
+        }
+    }
+</script>
+
+</body>
+</html>
